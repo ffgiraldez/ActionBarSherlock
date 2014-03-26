@@ -30,7 +30,7 @@ import com.actionbarsherlock.internal.widget.IcsLinearLayout;
 /**
  * @hide
  */
-public class ActionMenuView extends IcsLinearLayout implements MenuBuilder.ItemInvoker, MenuView {
+public class ActionMenuView extends LinearLayout implements MenuBuilder.ItemInvoker, MenuView {
     //UNUSED private static final String TAG = "ActionMenuView";
     private static final boolean IS_FROYO = Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO;
 

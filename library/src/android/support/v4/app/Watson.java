@@ -1,14 +1,15 @@
 package android.support.v4.app;
 
-import android.util.Log;
-import android.view.View;
-import android.view.Window;
 import com.actionbarsherlock.ActionBarSherlock.OnCreatePanelMenuListener;
 import com.actionbarsherlock.ActionBarSherlock.OnMenuItemSelectedListener;
 import com.actionbarsherlock.ActionBarSherlock.OnPreparePanelListener;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+
+import android.util.Log;
+import android.view.View;
+import android.view.Window;
 
 import java.util.ArrayList;
 
@@ -59,6 +60,22 @@ public abstract class Watson extends FragmentActivity implements OnCreatePanelMe
                         }
                         newMenus.add(f);
                     }
+                    // Dispatch calls to any child fragments
+                    if (f != null && f.mChildFragmentManager != null && f.mChildFragmentManager.mAdded != null)
+                    {
+                        for (int j = 0; j < f.mChildFragmentManager.mAdded.size(); j++)
+                        {
+                            Fragment f2 = f.mChildFragmentManager.mAdded.get(j);
+                            if (f2 != null && !f2.mHidden && f2.mHasMenu && f2.mMenuVisible && f2 instanceof OnCreateOptionsMenuListener) {
+                                show = true;
+                                ((OnCreateOptionsMenuListener)f2).onCreateOptionsMenu(menu, inflater);
+                                if (newMenus == null) {
+                                    newMenus = new ArrayList<Fragment>();
+                                }
+                                newMenus.add(f2);
+                            }
+                        }
+                    }
                 }
             }
 
@@ -98,6 +115,19 @@ public abstract class Watson extends FragmentActivity implements OnCreatePanelMe
                         show = true;
                         ((OnPrepareOptionsMenuListener)f).onPrepareOptionsMenu(menu);
                     }
+
+                    // Dispatch calls to any child fragments
+                    if (f != null && f.mChildFragmentManager != null && f.mChildFragmentManager.mAdded != null)
+                    {
+                        for (int j = 0; j < f.mChildFragmentManager.mAdded.size(); j++)
+                        {
+                            Fragment f2 = f.mChildFragmentManager.mAdded.get(j);
+                            if (f2 != null && !f2.mHidden && f2.mHasMenu && f2.mMenuVisible && f2 instanceof OnCreateOptionsMenuListener) {
+                                show = true;
+                                ((OnPrepareOptionsMenuListener)f2).onPrepareOptionsMenu(menu);
+                            }
+                        }
+                    }
                 }
             }
 
@@ -126,6 +156,19 @@ public abstract class Watson extends FragmentActivity implements OnCreatePanelMe
                     if (f != null && !f.mHidden && f.mHasMenu && f.mMenuVisible && f instanceof OnOptionsItemSelectedListener) {
                         if (((OnOptionsItemSelectedListener)f).onOptionsItemSelected(item)) {
                             return true;
+                        }
+                    }
+                    // Dispatch calls to any child fragments
+                    if (f != null && f.mChildFragmentManager != null && f.mChildFragmentManager.mAdded != null)
+                    {
+                        for (int j = 0; j < f.mChildFragmentManager.mAdded.size(); j++)
+                        {
+                            Fragment f2 = f.mChildFragmentManager.mAdded.get(j);
+                            if (f2 != null && !f2.mHidden && f2.mHasMenu && f2.mMenuVisible && f2 instanceof OnCreateOptionsMenuListener) {
+                                if (((OnOptionsItemSelectedListener)f2).onOptionsItemSelected(item)) {
+                                    return true;
+                                }
+                            }
                         }
                     }
                 }
